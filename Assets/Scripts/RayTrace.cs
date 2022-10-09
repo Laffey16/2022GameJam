@@ -10,12 +10,17 @@ public class RayTrace : MonoBehaviour
     public GameObject cam;
     public static RayTrace instance;
     int floorHit = 0;
-    public enum keytype { dud, global, room}
+    public enum keytype { dud, global, room1}
+    int doorsOpened; 
 
     bool HasKey;
     keytype currentKey;
     // Start is called before the first frame update
-
+    private void Start()
+    {
+        HasKey = false;
+        doorsOpened = 0;
+    }
     // Update is called once per frame
     void Update()
     {
@@ -50,24 +55,38 @@ public class RayTrace : MonoBehaviour
                         HasKey = true;
                         hitGameObject.GetComponent<Renderer>().enabled = false;
                         //CHANGE KEYTYPE using keyname
+                        char keyname = hitGameObject.name[2];
+                        switch (keyname) { 
+                            case '1': currentKey = keytype.room1;// repeat for other rooms when added 
+                                break;
+                            case 'G': currentKey = keytype.global; 
+                                break;
+                            default: currentKey = keytype.dud; 
+                                break;
+                           }
+                        Debug.Log(currentKey.ToString());
+                            
                     }
                     else if(HasKey&& !hitGameObject.GetComponent<Renderer>().enabled)//PLACE KEY BACK ONLY ON CORRECT PLATFORM
                     {
                         HasKey = false;
                         hitGameObject.GetComponent<Renderer>().enabled = true;
-                        //CHANGE KEYTYPE using keyname
+                        //CHANGE KEYTYPE using keyname //ACTUALLY NVM DONT THINK WELL need this
                     }
 
                 }
             }
             //Door
-            if (hitGameObject.tag == "WIn")
+            if (hitGameObject.tag == "Door")
             {
                 if (Input.GetKeyDown(KeyCode.E))
                 {
-                    SceneManager.LoadScene("Win");
-                
-                    Debug.Log("win");
+                    string roomname = "room" + doorsOpened.ToString();
+                    if (HasKey&&(currentKey== keytype.global||currentKey.ToString()==roomname))
+                    {
+                        //OPEN DOOR 
+                        hitGameObject.active = false;
+                    }
                 }
             }
             //if (hitGameObject.tag == "Floor")
