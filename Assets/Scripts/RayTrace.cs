@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class RayTrace : MonoBehaviour
 {
+    public AudioClip[] clips;
+    public AudioManager manager;
     public float rayLength;
     public GameObject pppos;
     public GameObject cam;
@@ -14,19 +16,35 @@ public class RayTrace : MonoBehaviour
     int doorsOpened; 
 
     bool HasKey;
+    bool finished;
+    float finishTimer;
     keytype currentKey;
     // Start is called before the first frame update
     private void Start()
     {
         HasKey = false;
+        finished = false;
         doorsOpened = 1;
+        manager.PlaySoundOnce(clips[3]);//getting over it refernce
     }
     // Update is called once per frame
     void Update()
     {
+        if (finished)
+        {
+            finishTimer += Time.deltaTime;
+            if (finishTimer > clips[6].length)
+            {
+                Debug.Log("quit");
+                Application.Quit();
+            }
+        }
         cam = GameObject.FindGameObjectWithTag("MainCamera");
         pppos = GameObject.FindGameObjectWithTag("Player");
-        rayInteract();
+        if (!finished)
+        {
+            rayInteract();
+        }
        // Debug.Log(currentCar);
     }
     void rayInteract()
@@ -74,17 +92,33 @@ public class RayTrace : MonoBehaviour
                                 break;
                            }
                         Debug.Log(currentKey.ToString());
+                        //////////////////////////////////////////////////RANDOMLY play either row5col  
+                        int rand = Random.Range(1, 100);
+                        if (rand>80)
+                        {
+                            manager.PlaySoundOnce(clips[0]);//57
                             
+                        }else if (rand>90)
+                        {
+                            
+                            manager.PlaySoundOnce(clips[8]);//wrong key (a lite bit of trolling)
+                        }
                     }
                     else if(HasKey&& !hitGameObject.GetComponent<Renderer>().enabled)//PLACE KEY BACK ONLY ON CORRECT PLATFORM
                     {
                         HasKey = false;
                         hitGameObject.GetComponent<Renderer>().enabled = true;
+                        if (Random.Range(0,100)>95)
+                        {
+                            manager.PlaySoundOnce(clips[5]);//testers
+                        }
                         //CHANGE KEYTYPE using keyname //ACTUALLY NVM DONT THINK WELL need this
                     }
 
                 }
             }
+
+
             //Door
             if (hitGameObject.tag == "Door")
             {
@@ -96,27 +130,34 @@ public class RayTrace : MonoBehaviour
                         //OPEN DOOR 
                         hitGameObject.active = false;
                         doorsOpened++;
+                        if (doorsOpened==5)
+                        {
+                            manager.PlaySoundOnce(clips[1]);//
+                            return;
+                        }else if (doorsOpened==6)
+                        {
+                            //VICTORY STUFF
+                            manager.PlaySoundOnce(clips[6]);//
+                            finished = true;
+                            return;
+                        }
+
+                        ////////////////////////////////////////////////////////////////////////////////////////////////////////////ADD DOOR OPEN AUDIO
                         Debug.Log("open");
+                        manager.PlaySoundOnce(clips[4]);//door opened
+                        
+                        return;
                     }
-                    else
-                        Debug.Log("nice try");
+                    else { 
+                        Debug.Log("nice try");//////////////////////////////////////////////////////////////////////////WRONG KEY AUDIO
+                        manager.PlaySoundOnce(clips[7]);//wrong key no cap
+                        return;
+                    }
                 }
             }
-            //if (hitGameObject.tag == "Floor")
-            //{
-            //    if (Input.GetKeyDown(KeyCode.E))
-            //    {
-            //        ++floorHit;
-            //        if (floorHit > 2)
-            //        {
-            //            hitGameObject.GetComponent<Renderer>().enabled = false;
-            //        }
-            //        else { }
-               
-                 
-            //    }
-            //}
+      
             Debug.Log(hitGameObject.tag);
         }
     }
+
 }
