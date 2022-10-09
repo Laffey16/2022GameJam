@@ -10,7 +10,7 @@ public class RayTrace : MonoBehaviour
     public GameObject cam;
     public static RayTrace instance;
     int floorHit = 0;
-    public enum keytype { dud, global, room1}
+    public enum keytype { dud, global, room1,room2 ,room3, room4}
     int doorsOpened; 
 
     bool HasKey;
@@ -19,7 +19,7 @@ public class RayTrace : MonoBehaviour
     private void Start()
     {
         HasKey = false;
-        doorsOpened = 0;
+        doorsOpened = 1;
     }
     // Update is called once per frame
     void Update()
@@ -59,6 +59,15 @@ public class RayTrace : MonoBehaviour
                         switch (keyname) { 
                             case '1': currentKey = keytype.room1;// repeat for other rooms when added 
                                 break;
+                            case '2':
+                                currentKey = keytype.room2;// repeat for other rooms when added 
+                                break;
+                            case '3':
+                                currentKey = keytype.room3;// repeat for other rooms when added 
+                                break;
+                            case '4':
+                                currentKey = keytype.room4;// repeat for other rooms when added 
+                                break;
                             case 'G': currentKey = keytype.global; 
                                 break;
                             default: currentKey = keytype.dud; 
@@ -82,11 +91,15 @@ public class RayTrace : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.E))
                 {
                     string roomname = "room" + doorsOpened.ToString();
-                    if (HasKey&&(currentKey== keytype.global||currentKey.ToString()==roomname))
+                    if (HasKey && (currentKey == keytype.global || currentKey.ToString() == roomname))
                     {
                         //OPEN DOOR 
                         hitGameObject.active = false;
+                        doorsOpened++;
+                        Debug.Log("open");
                     }
+                    else
+                        Debug.Log("nice try");
                 }
             }
             //if (hitGameObject.tag == "Floor")
