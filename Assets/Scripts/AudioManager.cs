@@ -8,7 +8,6 @@ using System.Collections;
 public class AudioManager : MonoBehaviour
 {
 
-
     private static AudioManager instance;
     private AudioSource sfxSource;
 
@@ -50,14 +49,14 @@ public class AudioManager : MonoBehaviour
     private void Awake()
     {
         //Adds 2 audio sources for music
-        musicSource = this.gameObject.AddComponent<AudioSource>();
-        musicSource2 = this.gameObject.AddComponent<AudioSource>();
+        musicSource = gameObject.AddComponent<AudioSource>();
+        musicSource2 = gameObject.AddComponent<AudioSource>();
         //Adds an audio source for sfx
-        sfxSource = this.gameObject.GetComponent<AudioSource>();
+        sfxSource = gameObject.GetComponent<AudioSource>();
 
         //Adds the sources to output to the correct mixergroup, this is so the volume can actually be changed by the player.
         //Makes the Audiomanager persist throughout on scene change.
-        DontDestroyOnLoad(this.gameObject);
+        DontDestroyOnLoad(gameObject);
 
         //Loops the music tracks, just incase a new one doesn't play in time.
         musicSource.loop = true;
@@ -101,7 +100,7 @@ public class AudioManager : MonoBehaviour
             activeSource.Play();
         }
 
-        float t = 0.0f;
+        float t;
         // Fade out
         for (t = 0; t < transitionTime; t += Time.deltaTime)
         {

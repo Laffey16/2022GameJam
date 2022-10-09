@@ -25,7 +25,7 @@ public class Menu : MonoBehaviour
     /// </summary>
     public void Tutorial()
     {
-        Debug.Log("It's okay you don't need a tutorial.");
+        SceneManager.LoadScene("Tutorial");
     }
 
     /// <summary>
